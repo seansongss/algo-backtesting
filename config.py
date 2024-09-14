@@ -9,5 +9,5 @@ SHORT_WINDOW = 20
 LONG_WINDOW = 50
 
 # Date range for backtesting
-START_DATE = '2020-01-01'
-END_DATE = '2023-01-01'
+START_DATE = '2019-01-01'
+END_DATE = '2024-09-01'
