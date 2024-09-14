@@ -1,5 +1,5 @@
 # Ticker symbols
-TICKER = 'AAPL'
+TICKER = 'GOOGL'
 
 # Commission rate (e.g., $1 per trade)
 COMMISSION = 1.0
