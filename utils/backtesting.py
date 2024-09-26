@@ -2,6 +2,8 @@ import pandas as pd
 
 from config import COMMISSION, TICKER
 
+pd.set_option('future.no_silent_downcasting', True)
+
 def backtest_strategy(data, signals, initial_capital):
     # Initialize portfolio DataFrame
     portfolio = pd.DataFrame(index=signals.index, columns=[TICKER, "Holdings", "Cash", "Commission", "Total", "Returns"]).fillna(0.0)
