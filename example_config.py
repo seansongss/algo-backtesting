@@ -1,5 +1,5 @@
-# Set SSL CERT
-IS_CLOSED = True
+# Network setting
+IS_AIRGAPPED = True
 
 # Ticker symbols
 TICKER = 'AAPL'
