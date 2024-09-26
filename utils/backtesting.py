@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+
 from config import COMMISSION, TICKER
 
 def backtest_strategy(data, signals, initial_capital=100000.0):
