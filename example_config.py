@@ -1,3 +1,6 @@
+# Set SSL CERT
+IS_CLOSED = True
+
 # Ticker symbols
 TICKER = 'AAPL'
 
