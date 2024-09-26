@@ -1,6 +1,7 @@
-import yfinance as yf
-from config import START_DATE, END_DATE, TICKER, IS_AIRGAPPED
 import requests
+import yfinance as yf
+
+from config import START_DATE, END_DATE, TICKER, IS_AIRGAPPED
 
 def fetch_data(ticker=TICKER, start_date=START_DATE, end_date=END_DATE):
     session = None
