@@ -9,8 +9,8 @@ def moving_average_strategy(data):
     signals = pd.DataFrame(index=data.index)
     signals['Signal'] = 0.0
     signals['Signal'][SHORT_WINDOW:] = np.where(
-        data['SMA_Short'][SHORT_WINDOW:] > data['SMA_Long'][SHORT_WINDOW:], 1.0, 0.0
+        data['SMA_Short'][SHORT_WINDOW:] > data['SMA_Long'][SHORT_WINDOW:], 1, 0
     )
     signals['Positions'] = signals['Signal'].diff()
-    
+
     return signals
