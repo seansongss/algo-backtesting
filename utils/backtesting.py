@@ -2,19 +2,48 @@ import pandas as pd
 
 from config import COMMISSION, TICKER
 
-def backtest_strategy(data, signals, initial_capital=100000.0):
-    positions = pd.DataFrame(index=signals.index).fillna(0.0)
-    positions[TICKER] = 100 * signals['Signal']  # Example: 100 shares
-
-    portfolio = positions.multiply(data['Adj Close'], axis=0)
-    portfolio['Holdings'] = positions.multiply(data['Adj Close'], axis=0).sum(axis=1)
-    portfolio['Cash'] = initial_capital - (positions.diff().multiply(data['Adj Close'], axis=0)).sum(axis=1).cumsum()
+def backtest_strategy(data, signals, initial_capital):
+    # Initialize portfolio DataFrame
+    portfolio = pd.DataFrame(index=signals.index, columns=[TICKER, "Holdings", "Cash", "Commission", "Total", "Returns"]).fillna(0.0)
+    portfolio[TICKER] = data['Adj Close']
     
-    # Deduct commission
-    trade_costs = (positions.diff().abs() * COMMISSION).sum(axis=1)
-    portfolio['Cash'] -= trade_costs.cumsum()
+    # Initial values for cash and holdings
+    cash = initial_capital
+    holdings = 0
+    commission_total = 0
     
-    portfolio['Total'] = portfolio['Holdings'] + portfolio['Cash']
-    portfolio['Returns'] = portfolio['Total'].pct_change()
-
+    # Iterate through signals
+    for date, row in signals.iterrows():
+        price = portfolio.at[date, TICKER]
+        signal = row['Signal']
+        position = row['Positions']
+        
+        if signal == 1 and position == 0:  # Buy signal
+            # Calculate how much stock can be bought with available cash (minus commission)
+            if cash > COMMISSION:  # Ensure commission can be deducted from cash
+                # Calculate the number of shares to buy
+                shares_to_buy = (cash - COMMISSION) // price
+                if shares_to_buy > 0:
+                    # Update holdings, cash, and commission
+                    holdings += shares_to_buy
+                    cash -= shares_to_buy * price + COMMISSION
+                    commission_total += COMMISSION
+                    portfolio.at[date, "Holdings"] = holdings
+                    portfolio.at[date, "Commission"] = COMMISSION
+        
+        elif signal == 1 and position == 1 and holdings > 0:  # Sell signal
+            # Sell all holdings
+            cash += holdings * price - COMMISSION
+            commission_total += COMMISSION
+            portfolio.at[date, "Holdings"] = 0  # After selling, no holdings
+            holdings = 0
+            portfolio.at[date, "Commission"] = COMMISSION
+        
+        # Update portfolio with cash, total value, and returns
+        portfolio.at[date, "Cash"] = cash
+        portfolio.at[date, "Total"] = cash + (holdings * price)  # Total is cash + value of holdings
+        if date != signals.index[0]:  # Skip the first row
+            portfolio.at[date, "Returns"] = portfolio.at[date, "Total"] - portfolio.at[signals.index[0], "Total"]
+    
+    print(portfolio)
     return portfolio
