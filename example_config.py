@@ -1,6 +1,9 @@
 # Network setting
 IS_AIRGAPPED = True
 
+# Select strategy
+STRATEGY = 'moving_average'
+
 # Ticker symbols
 TICKER = 'AAPL'
 
